@@ -13,15 +13,20 @@ import lightgbm as lgb
 import sklearn.datasets
 import sklearn.metrics
 from sklearn.model_selection import train_test_split
+from lightgbm import Dataset
 
 
 # FYI: Objective functions can take additional arguments
 # (https://optuna.readthedocs.io/en/stable/faq.html#objective-func-additional-args).
 def objective(trial):
+
+    # Loading the dataset（データの準備）
     data, target = sklearn.datasets.load_breast_cancer(return_X_y=True)
     train_x, valid_x, train_y, valid_y = train_test_split(data, target, test_size=0.25)
+    # Setting up data for lightgbm（lightgbm用にデータ設定）
     dtrain = lgb.Dataset(train_x, label=train_y)
 
+    # Tuning hyperparameter（ハイパーパラメータ設定）
     param = {
         "objective": "binary",
         "metric": "binary_logloss",
@@ -36,16 +41,21 @@ def objective(trial):
         "min_child_samples": trial.suggest_int("min_child_samples", 5, 100),
     }
 
+    # Training the model by lightgbm. （lightgbmによる学習）
     gbm = lgb.train(param, dtrain)
+    # Predicting by lightgbm （lightgbmによる予測）
     preds = gbm.predict(valid_x)
+    # Calculation of accuracy（精度の算出）
     pred_labels = np.rint(preds)
     accuracy = sklearn.metrics.accuracy_score(valid_y, pred_labels)
     return accuracy
 
 
 if __name__ == "__main__":
+    # Optimization by optuna（optunaによる最適化）
     study = optuna.create_study(direction="maximize")
     study.optimize(objective, n_trials=100)
+    # study.optimize(objective, timeout=60)
 
     print("Number of finished trials: {}".format(len(study.trials)))
 
