@@ -13,6 +13,7 @@ import lightgbm as lgb
 import sklearn.datasets
 import sklearn.metrics
 from sklearn.model_selection import train_test_split
+from sklearn import metrics
 from lightgbm import Dataset
 
 
@@ -71,3 +72,4 @@ if __name__ == "__main__":
     print("  Params: ")
     for key, value in trial.params.items():
         print("    {}: {}".format(key, value))
+
