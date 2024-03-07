@@ -1,2 +1,2 @@
-### References
+## References
 （『Optunaによるブラックボックス最適化』）
