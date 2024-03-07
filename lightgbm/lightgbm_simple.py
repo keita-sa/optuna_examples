@@ -23,6 +23,7 @@ def objective(trial):
     # Loading the dataset（データの準備）
     data, target = sklearn.datasets.load_breast_cancer(return_X_y=True)
     train_x, valid_x, train_y, valid_y = train_test_split(data, target, test_size=0.25)
+
     # Setting up data for lightgbm（lightgbm用にデータ設定）
     dtrain = lgb.Dataset(train_x, label=train_y)
 
@@ -43,8 +44,10 @@ def objective(trial):
 
     # Training the model by lightgbm. （lightgbmによる学習）
     gbm = lgb.train(param, dtrain)
+
     # Predicting by lightgbm （lightgbmによる予測）
     preds = gbm.predict(valid_x)
+
     # Calculation of accuracy（精度の算出）
     pred_labels = np.rint(preds)
     accuracy = sklearn.metrics.accuracy_score(valid_y, pred_labels)
@@ -55,6 +58,7 @@ if __name__ == "__main__":
     # Optimization by optuna（optunaによる最適化）
     study = optuna.create_study(direction="maximize")
     study.optimize(objective, n_trials=100)
+
     # study.optimize(objective, timeout=60)
 
     print("Number of finished trials: {}".format(len(study.trials)))
