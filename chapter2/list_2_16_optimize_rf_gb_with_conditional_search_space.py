@@ -46,7 +46,7 @@ study = optuna.create_study(
     study_name="ch2-conditional",
     storage="sqlite:///optuna.db",
 )
-study.optimize(objective, n_trials=100)
+study.optimize(objective, n_trials=10)
 
 print(f"Best objective value: {study.best_value}")
 print(f"Best parameter: {study.best_params}")
