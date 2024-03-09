@@ -24,19 +24,27 @@ print("[Best Trials]")
 for trial in study.best_trials:
     print(f"- [{trial.number}] params={trial.params}, values={trial.values}")
 
-study = optuna.load_study(
-    study_name="ch3-multi-objective-example",
-    storage="sqlite:///optuna.db"
-)
-
-# すべてのトライアルをプロット（デフォルト挙動）
+# Plot all trials, default behavior
 optuna.visualization.plot_pareto_front(
 	study,
 	include_dominated_trials=True
 ).show()
 
-# Study.best_trials だけをプロット
+# Plot only Study.best_trials
 optuna.visualization.plot_pareto_front(
 	study,
 	include_dominated_trials=False
+).show()
+
+
+optuna.visualization.plot_slice(
+    study,
+    target=lambda t: t.values[0],
+    target_name="Objective value 0",
+).show()
+
+optuna.visualization.plot_slice(
+    study,
+    target=lambda t: t.values[1],
+    target_name="Objective value 1",
 ).show()
