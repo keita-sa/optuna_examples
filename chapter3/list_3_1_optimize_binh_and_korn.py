@@ -17,9 +17,26 @@ def objective(trial):
     return v1, v2
 
 study = optuna.create_study(directions=["minimize", "minimize"])
-study.optimize(objective, n_trials=100)
+study.optimize(objective, n_trials=1000)
 
 print("[Best Trials]")
 
 for trial in study.best_trials:
     print(f"- [{trial.number}] params={trial.params}, values={trial.values}")
+
+study = optuna.load_study(
+    study_name="ch3-multi-objective-example",
+    storage="sqlite:///optuna.db"
+)
+
+# すべてのトライアルをプロット（デフォルト挙動）
+optuna.visualization.plot_pareto_front(
+	study,
+	include_dominated_trials=True
+).show()
+
+# Study.best_trials だけをプロット
+optuna.visualization.plot_pareto_front(
+	study,
+	include_dominated_trials=False
+).show()
